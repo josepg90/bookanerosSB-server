@@ -31,6 +31,30 @@ public class TipoLibroEntity implements Serializable {
     private String genero;
     
     @OneToMany(mappedBy = "tipolibro")
-    private List<LibroEntity> productos = new ArrayList<>();
+    private List<LibroEntity> libros = new ArrayList<>();
+    
+    public TipoLibroEntity () {
+        
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getGenero() {
+        return genero;
+    }
+
+    public void setGenero(String genero) {
+        this.genero = genero;
+    }
+    
+    public int getLibros() {
+        return libros.size();
+    }
     
 }

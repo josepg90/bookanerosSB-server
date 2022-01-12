@@ -8,12 +8,15 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -43,7 +46,13 @@ public class LibroEntity implements Serializable{
     
     @ManyToOne
     @JoinColumn(name = "id_tipolibro")
-    private TipoLibroEntity tipoproducto;
+    private TipoLibroEntity tipolibro;
+    
+    @OneToMany(mappedBy = "libro")
+    private List<PostEntity> posts = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "libro")
+    private List<FavoritosValoracionEntity> valoraciones = new ArrayList<>();
     
     public LibroEntity (){
     }
@@ -120,12 +129,16 @@ public class LibroEntity implements Serializable{
         this.novedad = novedad;
     }
 
-    public TipoLibroEntity getTipoproducto() {
-        return tipoproducto;
+    public TipoLibroEntity getTipolibro() {
+        return tipolibro;
     }
 
-    public void setTipoproducto(TipoLibroEntity tipoproducto) {
-        this.tipoproducto = tipoproducto;
+    public void setTipoproducto(TipoLibroEntity tipolibro) {
+        this.tipolibro = tipolibro;
+    }
+    
+    public int getPost() {
+        return posts.size();
     }
     
     
