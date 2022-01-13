@@ -54,6 +54,7 @@ public class SessionController {
 
     @PostMapping
     public ResponseEntity<?> login(@RequestBody UsuarioBean oUsuarioBean) {
+                
         if (oUsuarioBean.getPassword() != null) {
             UsuarioEntity oUsuarioEntity = oUsuarioRepository.findByLoginAndPassword(oUsuarioBean.getLogin(), oUsuarioBean.getPassword());
             if (oUsuarioEntity != null) {

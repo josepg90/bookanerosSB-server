@@ -99,10 +99,10 @@ public class UsuarioController {
 			}
 		}
 	}
-
+        //POSTMAN: DA ERROR
 	@GetMapping("/page")
 	public ResponseEntity<?> getPage(@PageableDefault(page = 0, size = 5, direction = Sort.Direction.ASC) Pageable oPageable,
-			@RequestParam(required = false) Long filtertype, @RequestParam(required = false) String filter) {
+			/*@RequestParam(required = false) Long filtertype, @RequestParam(required = false)*/ String login) {
 
 		UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
 
@@ -113,7 +113,7 @@ public class UsuarioController {
 			if (oUsuarioEntity.getId() == 1) {
 				Page<UsuarioEntity> oPage;
 				
-					oPage = oUsuarioRepository.findByLoginIgnoreCaseContaining(filter, oPageable);				
+					oPage = oUsuarioRepository.findByLoginIgnoreCaseContaining(login, oPageable);				
 
 				return new ResponseEntity<Page<UsuarioEntity>>(oPage, HttpStatus.OK);
 			} else {
@@ -131,7 +131,8 @@ public class UsuarioController {
 		} else {
 			if (oUsuarioEntity.getId() == 1) {
 				if (oNewUsuarioEntity.getId() == null) {
-					oNewUsuarioEntity.setPassword("4298f843f830fb3cc13ecdfe1b2cf10f51f929df056d644d1bca73228c5e8f64");
+                                        //AQUI ESTAS AÑADIENDO ESTE PASSWORD AUNQUE PONGAS OTRO DIFERENTE, CUIDADO!
+					//oNewUsuarioEntity.setPassword("4298f843f830fb3cc13ecdfe1b2cf10f51f929df056d644d1bca73228c5e8f64");
 					return new ResponseEntity<>(oUsuarioRepository.save(oNewUsuarioEntity), HttpStatus.OK);
 				} else {
 					return new ResponseEntity<Long>(0L, HttpStatus.NOT_MODIFIED);
@@ -154,8 +155,8 @@ public class UsuarioController {
 				if (oUsuarioRepository.existsById(id)) {
 					UsuarioEntity oUsuarioEntity3 = oUsuarioRepository.findById(id).get();
 					oUsuarioEntity.setId(id);
-				
-					oUsuarioEntity.setPassword("4298f843f830fb3cc13ecdfe1b2cf10f51f929df056d644d1bca73228c5e8f64");
+                                        //AQUI ESTAS AÑADIENDO ESTE PASSWORD AUNQUE PONGAS OTRO DIFERENTE, CUIDADO!
+					//oUsuarioEntity.setPassword("4298f843f830fb3cc13ecdfe1b2cf10f51f929df056d644d1bca73228c5e8f64");
 					return new ResponseEntity<UsuarioEntity>(oUsuarioRepository.save(oUsuarioEntity), HttpStatus.OK);
 				} else {
 					return new ResponseEntity<UsuarioEntity>(oUsuarioRepository.findById(id).get(),

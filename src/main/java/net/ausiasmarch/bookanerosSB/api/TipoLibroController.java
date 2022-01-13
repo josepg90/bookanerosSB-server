@@ -67,7 +67,7 @@ public class TipoLibroController {
     public ResponseEntity<Long> count() {
         return new ResponseEntity<Long>(oTipoLibroRepository.count(), HttpStatus.OK);
     }
-    
+    //FALTA PROBAR
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable(value = "id") Long id) {
         UsuarioEntity oSessionUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
@@ -91,7 +91,7 @@ public class TipoLibroController {
         }
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<?> create(@RequestBody TipoLibroEntity oTipoLibroEntity
     ) {
         UsuarioEntity oSessionUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
@@ -111,15 +111,21 @@ public class TipoLibroController {
         }
     }
 
-    @PutMapping("/")
-    public ResponseEntity<?> update(@RequestBody TipoLibroEntity oTipoLibroEntity
+    //EL PATHVARIABLE ES PARA COMPROBAR EN EL POSTMAN,PARA EL CLIENTE SOBRA, Y /{id} DEL PutMapping!!
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(@PathVariable(value = "id") Long id, @RequestBody TipoLibroEntity oTipoLibroEntity
     ) {
         UsuarioEntity oSessionUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
         if (oSessionUsuarioEntity == null) {
             return new ResponseEntity<Long>(0L, HttpStatus.UNAUTHORIZED);
         } else {
             if (oSessionUsuarioEntity.getId() == 1) {
-                if (oTipoLibroRepository.existsById(oTipoLibroEntity.getId())) {
+                //ESTO ES PA CLIENTE, LAS 3 SIGUIENTES LINEAS SIN COMENTAR ES PARA COMPROBAR EN POSTMAN (MIRAR WILDCART SI NO FUNCIONA)
+                //if (oTipoLibroRepository.existsById(oTipoLibroEntity.getId())) {
+                if (oTipoLibroRepository.existsById(id)) {
+					TipoLibroEntity oTipoLibroEntity3 = oTipoLibroRepository.findById(id).get();
+					oTipoLibroEntity.setId(id);
+                //HASTA AQUÍ COMPROBACIÓN EN POSTMAN
                     return new ResponseEntity<TipoLibroEntity>(oTipoLibroRepository.save(oTipoLibroEntity), HttpStatus.OK);
                 } else {
                     return new ResponseEntity<Long>(0L, HttpStatus.NOT_MODIFIED);
