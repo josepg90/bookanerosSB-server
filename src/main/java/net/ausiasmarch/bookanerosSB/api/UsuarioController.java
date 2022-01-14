@@ -112,8 +112,9 @@ public class UsuarioController {
 
 			if (oUsuarioEntity.getId() == 1) {
 				Page<UsuarioEntity> oPage;
-				
-					oPage = oUsuarioRepository.findByLoginIgnoreCaseContaining(login, oPageable);				
+                                //ESTE BUSCA FILTRANDO POR LOGIN
+				//oPage = oUsuarioRepository.findByLoginIgnoreCaseContaining(oUsuarioEntity.getLogin(), oPageable);				
+                                oPage = oUsuarioRepository.findAll(oPageable);				
 
 				return new ResponseEntity<Page<UsuarioEntity>>(oPage, HttpStatus.OK);
 			} else {
