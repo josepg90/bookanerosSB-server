@@ -92,66 +92,30 @@ public class PostController {
     public ResponseEntity<?> getPage(@PageableDefault(page = 0, size = 10, direction = Sort.Direction.DESC) Pageable oPageable,
             @RequestParam(name = "filter", required = false) String strFilter, @RequestParam(name = "id", required = false) Long id) {
         Page<PostEntity> oPage = null;
-        PostEntity oPostEntity = oPostRepository.getById(id);
         UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
+        //PostEntity oPostEntity = oPostRepository.getById(id);
         if (oUsuarioEntity == null) {
             return new ResponseEntity<Long>(0L, HttpStatus.UNAUTHORIZED);
         } else {
             if (oUsuarioEntity.getId() == 1) {
-                /*if (lFactura != null) {
-                    if (strFilter != null) {
-                        oPage = oPostRepository.findByFacturaIdAndCantidadOrPrecioOrFechaOrDescuentoUsuarioOrDescuentoProducto(lFactura, strFilter, strFilter, strFilter, strFilter, strFilter, oPageable);
-                    } else {
-                        oPage = oPostRepository.findByFacturaId(lFactura, oPageable);
-                    }
-                } else if (lProducto != null) {
-                    if (strFilter != null) {
-                        oPage = oPostRepository.findByProductoIdAndCantidadOrPrecioOrFechaOrDescuentoUsuarioOrDescuentoProducto(lProducto, strFilter, strFilter, strFilter, strFilter, strFilter, oPageable);
-                    } else {
-                        oPage = oPostRepository.findByProductoId(lProducto, oPageable);
-                    }
-                } else {
-                    if (strFilter != null) {
-                        oPage = oPostRepository.findByIdContain(strFilter, strFilter, strFilter, strFilter, strFilter, strFilter, oPageable);
-                    } else {
-                        oPage = oPostRepository.findAll(oPageable);
-                    }
-                }
-                return new ResponseEntity<Page<PostEntity>>(oPage, HttpStatus.OK);
-            } else {
-                if (lFactura != null) {
-                    if (strFilter != null) {
-                        oPage = oPostRepository.findByFacturaIdAndCantidadOrPrecioOrFechaOrDescuentoUsuarioOrDescuentoProductoUsuario(lFactura, strFilter, strFilter, strFilter, strFilter, strFilter,oUsuarioEntity.getId(), oPageable);
-                    } else {
-                        oPage = oPostRepository.findByFacturaIdUsuario(lFactura, oUsuarioEntity.getId(), oPageable);
-                    }
-                } else if (lProducto != null) {
-                    if (strFilter != null) {
-                        oPage = oPostRepository.findByProductoIdAndCantidadOrPrecioOrFechaOrDescuentoUsuarioOrDescuentoProductoUsuario(lProducto, strFilter, strFilter, strFilter, strFilter, strFilter,oUsuarioEntity.getId(), oPageable);
-                    } else {
-                        oPage = oPostRepository.findByProductoIdUsuario(lProducto,oUsuarioEntity.getId(), oPageable);
-                    }
-                } else {
-                    if (strFilter != null) {
-                        oPage = oPostRepository.findByIdContainUsuario(strFilter, strFilter, strFilter, strFilter, strFilter, strFilter, oUsuarioEntity.getId(),oPageable);
-                    } else {
-                        oPage = oPostRepository.findAllUsuario(oUsuarioEntity.getId(),oPageable);
-                    }
-                }
-                return new ResponseEntity<Page<PostEntity>>(oPage, HttpStatus.OK);*/
-                        
+                                        
             oPage = oPostRepository.findAll(oPageable);
         
             return new ResponseEntity<>(oPage, HttpStatus.OK);
-            } else{            
-                if(oPostRepository.existsById(id) && oUsuarioEntity.getId() == oPostEntity.getUsuario().getId()){
-                    return new ResponseEntity<Page<PostEntity>>((Page<PostEntity>) oPostRepository.findByPostIdUsuarioView(oUsuarioEntity.getId(), oPostRepository.getById(id).getId()), HttpStatus.OK);
+            } else{
+                //UN USUARIO NORMAL AHORA NO ESTA AUTORIZADO PARA VER POSTS
+                //FALTA HACER QUE PUEDA VER SUS POSTS
+                //return new ResponseEntity<Long>(0L, HttpStatus.UNAUTHORIZED);            
+                //if(oPostRepository.existsById(id) && oUsuarioEntity.getId() == oPostEntity.getUsuario().getId()){
+                    
+                    //return new ResponseEntity<Page<PostEntity>>((Page<PostEntity>) oPostRepository.findByPostIdUsuarioView(oUsuarioEntity.getId(), oPostRepository.getById(id).getId()), HttpStatus.OK);
+                    return new ResponseEntity<Page<PostEntity>>((Page<PostEntity>) oPostRepository.findAllUsuario(oUsuarioEntity.getId(), oPageable), HttpStatus.OK);
 
-                } else {
+                //} else {
                 
-                return new ResponseEntity<Page<PostEntity>>(oPage, HttpStatus.NO_CONTENT);
+                //return new ResponseEntity<Page<PostEntity>>(oPage, HttpStatus.NO_CONTENT);
                 
-                }
+                //}
             }
                 
         }
@@ -168,6 +132,7 @@ public class PostController {
                 oPostEntity.setId(null);
                 return new ResponseEntity<PostEntity>(oPostRepository.save(oPostEntity), HttpStatus.OK);
             } else {
+                //ESTO HABRÁ QUE CAMBIARLO QUE ES PARA QUE LOS USUARIOS NO PUEDAN HACER NINGUN POST
                 return new ResponseEntity<Long>(0L, HttpStatus.UNAUTHORIZED);
             }
         }
@@ -192,6 +157,8 @@ public class PostController {
                     return new ResponseEntity<Long>(0L, HttpStatus.NOT_MODIFIED);
                 }
             } else {
+              //ESTO HABRÁ QUE CAMBIARLO QUE ES PARA QUE LOS USUARIOS NO PUEDAN HACER NINGUN POST
+
                 return new ResponseEntity<Long>(0L, HttpStatus.UNAUTHORIZED);
             }
         }

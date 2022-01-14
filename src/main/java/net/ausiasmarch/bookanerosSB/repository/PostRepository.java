@@ -5,6 +5,8 @@
 package net.ausiasmarch.bookanerosSB.repository;
 
 import net.ausiasmarch.bookanerosSB.entity.PostEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 /**
@@ -19,4 +21,10 @@ public interface PostRepository extends JpaRepository<PostEntity, Long>{
     
     @Query(value = "SELECT * FROM post where id_usuario IN (SELECT id FROM usuario WHERE id_usuario = :id_usuario) AND id = :id_post", nativeQuery = true)
     PostEntity findByPostIdUsuarioView(Long id_usuario, Long id_post);
+    
+    @Query(
+            value = "SELECT * FROM post where id_usuario IN (SELECT id FROM usuario WHERE id_usuario = ?1)",
+            nativeQuery = true)
+    Page<PostEntity> findAllUsuario(long id_usuario, Pageable oPageable);
+    
 }
