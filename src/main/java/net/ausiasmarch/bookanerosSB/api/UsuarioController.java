@@ -99,7 +99,7 @@ public class UsuarioController {
 			}
 		}
 	}
-        //POSTMAN: DA ERROR
+        //POSTMAN: DA ERROR --> solucionado
 	@GetMapping("/page")
 	public ResponseEntity<?> getPage(@PageableDefault(page = 0, size = 5, direction = Sort.Direction.ASC) Pageable oPageable,
 			/*@RequestParam(required = false) Long filtertype, @RequestParam(required = false)*/ String login) {
