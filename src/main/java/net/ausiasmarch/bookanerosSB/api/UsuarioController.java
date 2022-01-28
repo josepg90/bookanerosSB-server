@@ -126,7 +126,7 @@ public class UsuarioController {
 	@PostMapping("/new")
 	public ResponseEntity<?> create(@RequestBody UsuarioEntity oNewUsuarioEntity) {
 
-		UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
+		/*UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
 		if (oUsuarioEntity == null) {
 			return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
 		} else {
@@ -141,7 +141,12 @@ public class UsuarioController {
 			} else {
 				return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
 			}
-		}
+		}*/
+                if (oNewUsuarioEntity.getId() == null) {
+					return new ResponseEntity<>(oUsuarioRepository.save(oNewUsuarioEntity), HttpStatus.OK);
+				} else {
+					return new ResponseEntity<Long>(0L, HttpStatus.NOT_MODIFIED);
+				}
 	}
 
 	@PutMapping("/{id}")
@@ -168,7 +173,7 @@ public class UsuarioController {
 					UsuarioEntity oUsuarioEntity3 = oUsuarioRepository.findById(id).get();
 					oUsuarioEntity.setId(oUsuarioEntity2.getId());
 					
-					oUsuarioEntity.setPassword(password);
+					//oUsuarioEntity.setPassword(password);
 					return new ResponseEntity<UsuarioEntity>(oUsuarioRepository.save(oUsuarioEntity), HttpStatus.OK);
 				} else {
 					return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
@@ -185,7 +190,7 @@ public class UsuarioController {
 		if (oUsuarioEntity == null) {
 			return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
 		} else {
-			if (oUsuarioEntity.getId() == 1) {
+			if (oUsuarioEntity.getId() == id) {
 				oUsuarioRepository.deleteById(id);
 				if (oUsuarioRepository.existsById(id)) {
 					return new ResponseEntity<Long>(id, HttpStatus.NOT_MODIFIED);
