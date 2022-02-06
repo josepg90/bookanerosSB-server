@@ -190,7 +190,15 @@ public class UsuarioController {
 		if (oUsuarioEntity == null) {
 			return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
 		} else {
-			if (oUsuarioEntity.getId() == id) {
+			if (oUsuarioEntity.getId() == 1) {
+				oUsuarioRepository.deleteById(id);
+				if (oUsuarioRepository.existsById(id)) {
+					return new ResponseEntity<Long>(id, HttpStatus.NOT_MODIFIED);
+				} else {
+					return new ResponseEntity<Long>(0L, HttpStatus.OK);
+				}
+			} else {
+                            if (oUsuarioEntity.getId() == id) {
 				oUsuarioRepository.deleteById(id);
 				if (oUsuarioRepository.existsById(id)) {
 					return new ResponseEntity<Long>(id, HttpStatus.NOT_MODIFIED);
@@ -199,6 +207,8 @@ public class UsuarioController {
 				}
 			} else {
 				return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+			}
+				
 			}
 		}
 	}

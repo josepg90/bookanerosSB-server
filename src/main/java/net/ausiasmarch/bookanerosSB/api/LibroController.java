@@ -57,9 +57,22 @@ public class LibroController {
     // /libro?page=0&size=10&sort=precio,desc&filter=verde&tipoproducto=2
     //GET PAGE SIMPLE SIN FILTROOOOOOS!!!!
     @GetMapping("")
-    public ResponseEntity<Page<LibroEntity>> getPage(@PageableDefault(page = 0, size = 10, direction = Sort.Direction.DESC) Pageable oPageable) {
+    public ResponseEntity<Page<LibroEntity>> getPage(@PageableDefault(page = 0, size = 10, direction = Sort.Direction.DESC) Pageable oPageable,
+             @RequestParam(name = "filter") String filter/*, @RequestParam(name = "filtertype") Long filtertype*/) {
         Page<LibroEntity> oPage = null;
-        oPage = oLibroRepository.findAll(oPageable);
+                
+                /*if (filtertype!=null) {
+                    oPage = oLibroRepository.findByTipolibroId(filtertype,oPageable);
+                } else {*/
+                if (filter!=null) {
+                    oPage = oLibroRepository.findByTituloIgnoreCaseContainingOrAutorIgnoreCaseContaining(filter == null ? "" : filter, filter == null ? "" : filter, oPageable);
+
+                } else {
+                    oPage = oLibroRepository.findAll(oPageable);
+                //}
+                }
+       
+        //oPage = oLibroRepository.findAll(oPageable);
         return new ResponseEntity<Page<LibroEntity>>(oPage, HttpStatus.OK);
     }
 
