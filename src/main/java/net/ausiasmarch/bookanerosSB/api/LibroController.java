@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 /**
  *
  * @author Jose Primo Gil
@@ -31,13 +32,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/libro")
 public class LibroController {
-    
+
     @Autowired
     LibroRepository oLibroRepository;
 
     @Autowired
     HttpSession oHttpSession;
-    
+
     @GetMapping("/{id}")
     public ResponseEntity<LibroEntity> get(@PathVariable(value = "id") Long id) {
 
@@ -47,7 +48,7 @@ public class LibroController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
-    
+
     // libro/count
     @GetMapping("/count")
     public ResponseEntity<Long> count() {
@@ -58,20 +59,33 @@ public class LibroController {
     //GET PAGE SIMPLE SIN FILTROOOOOOS!!!!
     @GetMapping("")
     public ResponseEntity<Page<LibroEntity>> getPage(@PageableDefault(page = 0, size = 10, direction = Sort.Direction.DESC) Pageable oPageable,
-             @RequestParam(name = "filter") String filter/*, @RequestParam(name = "filtertype") Long filtertype*/) {
+            @RequestParam(name = "filter", required = false) String filter, @RequestParam(name = "filtertype", required = false) Long filtertype/**/) {
         Page<LibroEntity> oPage = null;
-                
-                /*if (filtertype!=null) {
-                    oPage = oLibroRepository.findByTipolibroId(filtertype,oPageable);
-                } else {*/
-                if (filter!=null) {
-                    oPage = oLibroRepository.findByTituloIgnoreCaseContainingOrAutorIgnoreCaseContaining(filter == null ? "" : filter, filter == null ? "" : filter, oPageable);
 
+        /**/if (filtertype != null && filter != null) {
+            oPage = oLibroRepository.findByTipolibroIdAndTituloIgnoreCaseContainingOrAutorIgnoreCaseContaining(filtertype, filter, filter, oPageable);
+        } else {
+            if (filter != null && filtertype == null) {
+                oPage = oLibroRepository.findByTituloIgnoreCaseContainingOrAutorIgnoreCaseContaining(filter == null ? "" : filter, filter == null ? "" : filter, oPageable);
+
+            } else {
+                if (filtertype != null && filter == null) {
+                    oPage = oLibroRepository.findByTipolibroId(filtertype, oPageable);
                 } else {
                     oPage = oLibroRepository.findAll(oPageable);
-                //}
                 }
-       
+            }
+        /*    if (filtertype != null) {
+            oPage = oLibroRepository.findByTipolibroId(filtertype, oPageable);
+        } else {
+            if (filter != null) {
+                oPage = oLibroRepository.findByTituloIgnoreCaseContainingOrAutorIgnoreCaseContaining(filter == null ? "" : filter, filter == null ? "" : filter, oPageable);
+
+            } else {
+                oPage = oLibroRepository.findAll(oPageable);
+            }
+        }*/
+        }
         //oPage = oLibroRepository.findAll(oPageable);
         return new ResponseEntity<Page<LibroEntity>>(oPage, HttpStatus.OK);
     }
@@ -108,9 +122,9 @@ public class LibroController {
                 //ESTO ES PA CLIENTE, LAS 3 SIGUIENTES LINEAS SIN COMENTAR ES PARA COMPROBAR EN POSTMAN (MIRAR WILDCART SI NO FUNCIONA)
                 //if (oLibroRepository.existsById(oLibroEntity.getId())) {
                 if (oLibroRepository.existsById(id)) {
-					LibroEntity oLibroEntity3 = oLibroRepository.findById(id).get();
-					oLibroEntity.setId(id);
-                //HASTA AQUÍ COMPROBACIÓN EN POSTMAN
+                    LibroEntity oLibroEntity3 = oLibroRepository.findById(id).get();
+                    oLibroEntity.setId(id);
+                    //HASTA AQUÍ COMPROBACIÓN EN POSTMAN
                     return new ResponseEntity<LibroEntity>(oLibroRepository.save(oLibroEntity), HttpStatus.OK);
                 } else {
                     return new ResponseEntity<Long>(0L, HttpStatus.NOT_MODIFIED);

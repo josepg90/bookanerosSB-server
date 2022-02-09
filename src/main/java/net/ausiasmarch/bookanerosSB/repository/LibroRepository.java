@@ -16,9 +16,9 @@ import org.springframework.data.jpa.repository.Query;
  */
 public interface LibroRepository extends JpaRepository<LibroEntity, Long> {
     
-    Page<LibroEntity> findByTituloIgnoreCaseContainingOrAutorIgnoreCaseContaining(String nombre, String codigo, Pageable oPageable);
+    Page<LibroEntity> findByTituloIgnoreCaseContainingOrAutorIgnoreCaseContaining(String nombre, String autor, Pageable oPageable);
     
-    Page<LibroEntity> findByAutorIgnoreCaseContaining(String autor, Pageable oPageable);
+    Page<LibroEntity> findByTipolibroIdAndTituloIgnoreCaseContainingOrAutorIgnoreCaseContaining(long IdTipolibro, String nombre, String codigo, Pageable oPageable);
 
     @Query(
             value = "SELECT * FROM libro WHERE id_tipolibro = ?1",
@@ -29,4 +29,5 @@ public interface LibroRepository extends JpaRepository<LibroEntity, Long> {
             value = "SELECT * FROM libro WHERE id_tipolibro = ?1 AND (titulo LIKE  %?2% OR codigo LIKE %?3%)",
             nativeQuery = true)
     Page<LibroEntity> findByTipolibroIdAndTituloOrCodigo(long IdTipolibro, String titulo, String codigo, Pageable oPageable);
+    
 }
