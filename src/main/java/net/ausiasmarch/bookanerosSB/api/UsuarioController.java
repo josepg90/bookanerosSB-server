@@ -123,7 +123,7 @@ public class UsuarioController {
 		}
 	}
 
-	@PostMapping("/new")
+	@PostMapping("")
 	public ResponseEntity<?> create(@RequestBody UsuarioEntity oNewUsuarioEntity) {
 
 		/*UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");

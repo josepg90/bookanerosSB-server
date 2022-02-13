@@ -18,7 +18,7 @@ public interface LibroRepository extends JpaRepository<LibroEntity, Long> {
     
     Page<LibroEntity> findByTituloIgnoreCaseContainingOrAutorIgnoreCaseContaining(String nombre, String autor, Pageable oPageable);
     
-    Page<LibroEntity> findByTipolibroIdAndTituloIgnoreCaseContainingOrAutorIgnoreCaseContaining(long IdTipolibro, String nombre, String codigo, Pageable oPageable);
+    Page<LibroEntity> findByTipolibroIdAndTituloIgnoreCaseContainingOrAutorIgnoreCaseContaining(long IdTipolibro, String nombre, String autor, Pageable oPageable);
 
     @Query(
             value = "SELECT * FROM libro WHERE id_tipolibro = ?1",

@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Jose Primo Gil
  */
 @RestController
-@RequestMapping("/post")
+@RequestMapping("/opinion")
 public class PostController {
     
     @Autowired
@@ -90,11 +90,56 @@ public class PostController {
     
     @GetMapping("")
     public ResponseEntity<?> getPage(@PageableDefault(page = 0, size = 10, direction = Sort.Direction.DESC) Pageable oPageable,
-            @RequestParam(name = "filter", required = false) String strFilter, @RequestParam(name = "id", required = false) Long id) {
+            @RequestParam(name = "filter", required = false) String filter, @RequestParam(name = "filtertype1", required = false) Long filtertype1,
+            @RequestParam(name = "filtertype2", required = false) Long filtertype2) {
         Page<PostEntity> oPage = null;
         UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
         //PostEntity oPostEntity = oPostRepository.getById(id);
+        
+        
+        if (filtertype1 != null) {
+            oPage = oPostRepository.findByLibroId(filtertype1, oPageable);
+        } else {
+            if (filtertype2 != null) {
+            oPage = oPostRepository.findByUsuarioId(filtertype2, oPageable);
+        } else {
+                    oPage = oPostRepository.findAll(oPageable);
+                }
+            
+        }
+        /*
         if (oUsuarioEntity == null) {
+            return new ResponseEntity<Long>(0L, HttpStatus.UNAUTHORIZED);
+        } else {
+            if (oUsuarioEntity.getId() == 1) {
+                                        
+            oPage = oPostRepository.findAll(oPageable);
+        
+            return new ResponseEntity<>(oPage, HttpStatus.OK);
+            } else{
+                //UN USUARIO NORMAL AHORA NO ESTA AUTORIZADO PARA VER POSTS
+                //FALTA HACER QUE PUEDA VER SUS POSTS
+                //return new ResponseEntity<Long>(0L, HttpStatus.UNAUTHORIZED);            
+                //if(oPostRepository.existsById(id) && oUsuarioEntity.getId() == oPostEntity.getUsuario().getId()){
+                    */
+                    //return new ResponseEntity<Page<PostEntity>>((Page<PostEntity>) oPostRepository.findByPostIdUsuarioView(oUsuarioEntity.getId(), oPostRepository.getById(id).getId()), HttpStatus.OK);
+                    //ESTE ES EL QUE ESTABA!!!!
+                    //return new ResponseEntity<Page<PostEntity>>((Page<PostEntity>) oPostRepository.findAllUsuario(oUsuarioEntity.getId(), oPageable), HttpStatus.OK);
+                    
+                //} else {
+                
+                //return new ResponseEntity<Page<PostEntity>>(oPage, HttpStatus.NO_CONTENT);
+                
+                //}
+            
+                return new ResponseEntity<Page<PostEntity>>(oPage, HttpStatus.OK);
+        }
+
+    
+    
+        
+        
+        /*if (oUsuarioEntity == null) {
             return new ResponseEntity<Long>(0L, HttpStatus.UNAUTHORIZED);
         } else {
             if (oUsuarioEntity.getId() == 1) {
@@ -120,7 +165,7 @@ public class PostController {
                 
         }
 
-    }
+    }*/
     
     @PostMapping("")
     public ResponseEntity<?> create(@RequestBody PostEntity oPostEntity) {
@@ -132,10 +177,15 @@ public class PostController {
                 oPostEntity.setId(null);
                 return new ResponseEntity<PostEntity>(oPostRepository.save(oPostEntity), HttpStatus.OK);
             } else {
+                if (oUsuarioEntity.getId() != null) {
+                oPostEntity.setId(null);
+                return new ResponseEntity<PostEntity>(oPostRepository.save(oPostEntity), HttpStatus.OK);
+            } else {
                 //ESTO HABRÁ QUE CAMBIARLO QUE ES PARA QUE LOS USUARIOS NO PUEDAN HACER NINGUN POST
                 return new ResponseEntity<Long>(0L, HttpStatus.UNAUTHORIZED);
             }
         }
+    }
     }
     
     //EL PATHVARIABLE ES PARA COMPROBAR EN EL POSTMAN,PARA EL CLIENTE SOBRA, Y /{id} DEL PutMapping!!
