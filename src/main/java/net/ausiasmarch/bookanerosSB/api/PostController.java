@@ -100,12 +100,20 @@ public class PostController {
         if (filtertype1 != null) {
             oPage = oPostRepository.findByLibroId(filtertype1, oPageable);
         } else {
-            if (filtertype2 != null) {
+            if (filtertype2 != null && filter ==null) {
             oPage = oPostRepository.findByUsuarioId(filtertype2, oPageable);
         } else {
+                if (filtertype2 != null && filter !=null) {
+            oPage = oPostRepository.findByUsuarioIdAndTituloIgnoreCaseContaining(filtertype2, filter, oPageable);
+        } else {
+                if (filter !=null && filtertype2 == null) {
+            oPage = oPostRepository.findByTituloIgnoreCaseContaining(filter, oPageable);        
+                }  else {
                     oPage = oPostRepository.findAll(oPageable);
                 }
-            
+                }
+            }
+                        
         }
         /*
         if (oUsuarioEntity == null) {

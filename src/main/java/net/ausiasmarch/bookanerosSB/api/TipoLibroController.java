@@ -53,10 +53,10 @@ public class TipoLibroController {
     
     @GetMapping("")
     public ResponseEntity<Page<TipoLibroEntity>> getPage(@PageableDefault(page = 0, size = 10, direction = Sort.Direction.DESC) Pageable oPageable,
-           @RequestParam(name = "filter", required = false) String strFilter) {
+           @RequestParam(name = "filter", required = false) String filter) {
         Page<TipoLibroEntity> oPage = null;
-        if (strFilter != null) {
-            oPage = oTipoLibroRepository.findByGeneroIgnoreCaseContaining(strFilter, oPageable);
+        if (filter != null) {
+            oPage = oTipoLibroRepository.findByGeneroIgnoreCaseContaining(filter, oPageable);
         } else {
             oPage = oTipoLibroRepository.findAll(oPageable);
         }
