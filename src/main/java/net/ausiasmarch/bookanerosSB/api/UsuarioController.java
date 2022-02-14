@@ -102,19 +102,25 @@ public class UsuarioController {
         //POSTMAN: DA ERROR --> solucionado
 	@GetMapping("/page")
 	public ResponseEntity<?> getPage(@PageableDefault(page = 0, size = 5, direction = Sort.Direction.ASC) Pageable oPageable,
-			/*@RequestParam(required = false) Long filtertype, @RequestParam(required = false)*/ String login) {
-
+                @RequestParam(name = "filter", required = false) String filter
+			/*@RequestParam(required = false) Long filtertype, @RequestParam(required = false)*/ ) {
+                Page<UsuarioEntity> oPage;
 		UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
-
+                
 		if (oUsuarioEntity == null) {
 			return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
 		} else {
 
 			if (oUsuarioEntity.getId() == 1) {
-				Page<UsuarioEntity> oPage;
+                            if (filter != null) {
+                                
+                                oPage = oUsuarioRepository.findByLoginIgnoreCaseContaining(filter, oPageable);
+                            } else {
+				
                                 //ESTE BUSCA FILTRANDO POR LOGIN
 				//oPage = oUsuarioRepository.findByLoginIgnoreCaseContaining(oUsuarioEntity.getLogin(), oPageable);				
-                                oPage = oUsuarioRepository.findAll(oPageable);				
+                                oPage = oUsuarioRepository.findAll(oPageable);
+                            }
 
 				return new ResponseEntity<Page<UsuarioEntity>>(oPage, HttpStatus.OK);
 			} else {

@@ -17,7 +17,7 @@ import org.springframework.data.jpa.repository.Query;
  */
 public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Long>{
     
-    UsuarioEntity findByLoginAndPassword(String login, String password);
+    Page<UsuarioEntity> findByLogin(String login, Pageable oPageable);
     
 
 
