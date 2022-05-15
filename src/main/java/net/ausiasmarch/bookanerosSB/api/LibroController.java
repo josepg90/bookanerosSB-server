@@ -175,4 +175,20 @@ public class LibroController {
         }
 
     }
+    
+    @GetMapping("/favoritos")
+    public ResponseEntity<Page<LibroEntity>> getFavoritos(@PageableDefault(page = 0, size = 10, direction = Sort.Direction.DESC) Pageable oPageable) {
+        Page<LibroEntity> oFavoritos = null;
+        UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
+
+        if (oUsuarioEntity == null) {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        } else {
+            oFavoritos = oLibroRepository.getFavoritosUsuario(oUsuarioEntity.getId(), oPageable);                   
+                
+            return new ResponseEntity<Page<LibroEntity>>(oFavoritos, HttpStatus.OK);
+            //return new ResponseEntity<Page<LibroEntity>>((Page<LibroEntity>) oLibroRepository.getFavoritosUsuario(oUsuarioEntity.getId()), HttpStatus.OK);
+
+        }
+    }
 }

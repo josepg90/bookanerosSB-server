@@ -28,5 +28,8 @@ public interface FavoritosValoracionRepository extends JpaRepository<FavoritosVa
     
     @Query(value = "SELECT AVG(CAST(valoracion AS DECIMAL(10,2))) FROM favoritos_valoracion WHERE id_usuario IN (SELECT id FROM usuario WHERE id_usuario = ?)", nativeQuery = true)
     Double getValoracion(Long id_usuario);
+    
+    @Query(value = "SELECT favorito FROM favoritos_valoracion WHERE id_usuario = ? AND id_libro = ?", nativeQuery = true)
+    Boolean getFavoritoUsuario(Long id_usuario, Long id_libro);
   
 }

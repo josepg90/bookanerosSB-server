@@ -167,4 +167,22 @@ public class FavoritosValoracionController {
         }
 
     }
+    
+    @GetMapping("/favoritoUsuario")
+    public ResponseEntity<Boolean> getFavoritoUsuario(@RequestParam(name = "filterUsuario", required = false) Long filterUsuario,
+            @RequestParam(name = "filterLibro", required = false) Long filterLibro) {
+        FavoritosValoracionEntity oFavoritosValoracionEntity = null;
+        Boolean oValoracionUsuario = null;
+        UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
+        if (oUsuarioEntity == null) {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        } else if (filterUsuario != null && filterLibro!= null) {
+            oValoracionUsuario = oFavoritosValoracionRepository.getFavoritoUsuario(filterUsuario, filterLibro);
+            return new ResponseEntity<Boolean>(oValoracionUsuario , HttpStatus.OK);
+        
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
+    }
 }
