@@ -74,13 +74,11 @@ public class FavoritosValoracionController {
         if (oUsuarioEntity == null) {
             return new ResponseEntity<Long>(0L, HttpStatus.UNAUTHORIZED);
         } else {
-            if (oUsuarioEntity.getId() == 1) {
+            
                 oFavoritosValoracionEntity.setId(null);
                 return new ResponseEntity<FavoritosValoracionEntity>(oFavoritosValoracionRepository.save(oFavoritosValoracionEntity), HttpStatus.OK);
-            } else {
-                //ESTO HABRÁ QUE CAMBIARLO QUE ES PARA QUE LOS USUARIOS NO PUEDAN HACER NINGUN POST
-                return new ResponseEntity<Long>(0L, HttpStatus.UNAUTHORIZED);
-            }
+            
+            
         }
     }
     
@@ -92,10 +90,10 @@ public class FavoritosValoracionController {
             return new ResponseEntity<Long>(0L, HttpStatus.UNAUTHORIZED);
         } else {
                 //ESTO ES PA CLIENTE, LAS 3 SIGUIENTES LINEAS SIN COMENTAR ES PARA COMPROBAR EN POSTMAN (MIRAR WILDCART SI NO FUNCIONA)
-                //if (oPostRepository.existsById(oPostEntity.getId())) {
-                if (oFavoritosValoracionRepository.existsById(id)) {
-					FavoritosValoracionEntity oFavoritosValoracionEntity3 = oFavoritosValoracionRepository.findById(id).get();
-					oFavoritosValoracionEntity.setId(id);
+                if (oFavoritosValoracionRepository.existsById(oFavoritosValoracionEntity.getId())) {
+                //if (oFavoritosValoracionRepository.existsById(id)) {
+		//			FavoritosValoracionEntity oFavoritosValoracionEntity3 = oFavoritosValoracionRepository.findById(id).get();
+		//			oFavoritosValoracionEntity.setId(id);
                 //HASTA AQUÍ COMPROBACIÓN EN POSTMAN
                     return new ResponseEntity<FavoritosValoracionEntity>(oFavoritosValoracionRepository.save(oFavoritosValoracionEntity), HttpStatus.OK);
                 } else {
@@ -129,4 +127,44 @@ public class FavoritosValoracionController {
         }
     }
     
+    @GetMapping("/{id}")
+    public ResponseEntity<FavoritosValoracionEntity> getOne(@PathVariable(value = "id") Long id) {
+
+        if (oFavoritosValoracionRepository.existsById(id)) {
+            return new ResponseEntity<FavoritosValoracionEntity>(oFavoritosValoracionRepository.findById(id).get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
+    
+    @GetMapping("/countValoracion")
+    public ResponseEntity<Double> countValoracion() {
+        FavoritosValoracionEntity oFavoritosValoracionEntity = null;
+        UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
+        if (oUsuarioEntity == null) {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        } else {
+
+            return new ResponseEntity<Double>(oFavoritosValoracionRepository.getValoracion(oUsuarioEntity.getId()) , HttpStatus.OK);
+        
+        }
+    }
+    
+    @GetMapping("/valoracionUsuario")
+    public ResponseEntity<Long> getValoracionUsuario(@RequestParam(name = "filterUsuario", required = false) Long filterUsuario,
+            @RequestParam(name = "filterLibro", required = false) Long filterLibro) {
+        FavoritosValoracionEntity oFavoritosValoracionEntity = null;
+        Long oValoracionUsuario = null;
+        UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
+        if (oUsuarioEntity == null) {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        } else if (filterUsuario != null && filterLibro!= null) {
+            oValoracionUsuario = oFavoritosValoracionRepository.getValoracionUsuario(filterUsuario, filterLibro);
+            return new ResponseEntity<Long>(oValoracionUsuario , HttpStatus.OK);
+        
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
+    }
 }

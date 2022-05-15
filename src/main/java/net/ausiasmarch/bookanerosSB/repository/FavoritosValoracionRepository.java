@@ -22,4 +22,11 @@ public interface FavoritosValoracionRepository extends JpaRepository<FavoritosVa
     
     @Query(value = "SELECT COUNT(*) FROM favoritos_valoracion where id_usuario IN (SELECT id FROM usuario WHERE id_usuario = ?)", nativeQuery = true)
     Long findAllUsuarioCount(Long id_usuario);
+    
+    @Query(value = "SELECT id FROM favoritos_valoracion WHERE id_usuario = ? AND id_libro = ?", nativeQuery = true)
+    Long getValoracionUsuario(Long id_usuario, Long id_libro);
+    
+    @Query(value = "SELECT AVG(CAST(valoracion AS DECIMAL(10,2))) FROM favoritos_valoracion WHERE id_usuario IN (SELECT id FROM usuario WHERE id_usuario = ?)", nativeQuery = true)
+    Double getValoracion(Long id_usuario);
+  
 }

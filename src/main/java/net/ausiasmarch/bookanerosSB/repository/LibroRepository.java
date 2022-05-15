@@ -30,4 +30,6 @@ public interface LibroRepository extends JpaRepository<LibroEntity, Long> {
             nativeQuery = true)
     Page<LibroEntity> findByTipolibroIdAndTituloOrCodigo(long IdTipolibro, String titulo, String codigo, Pageable oPageable);
     
+    @Query(value = "SELECT ROUND(AVG(CAST(valoracion AS DECIMAL(10,2))),1) FROM favoritos_valoracion WHERE id_libro IN (SELECT id FROM libro WHERE id_libro = ?)", nativeQuery = true)
+    Double getValoracion(Long id_libro);
 }

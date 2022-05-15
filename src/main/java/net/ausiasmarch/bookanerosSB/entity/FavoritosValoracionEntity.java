@@ -26,7 +26,7 @@ public class FavoritosValoracionEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    private int valoracion;
+    private Integer valoracion;
     private boolean favorito;
     
     @ManyToOne
@@ -49,11 +49,11 @@ public class FavoritosValoracionEntity implements Serializable {
         this.id = id;
     }
 
-    public int getValoracion() {
+    public Integer getValoracion() {
         return valoracion;
     }
 
-    public void setValoracion(int valoracion) {
+    public void setValoracion(Integer valoracion) {
         this.valoracion = valoracion;
     }
 

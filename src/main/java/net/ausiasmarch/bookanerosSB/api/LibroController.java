@@ -161,4 +161,18 @@ public class LibroController {
 
         }
     }
+    
+    @GetMapping("/countValoracion/{id}")
+    public ResponseEntity<Double> countValoracion(@PathVariable(value = "id") Long id) {
+        //LibroEntity olibroEntity = oLibroRepository.getById(id);
+        UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
+        Double oValoracion = null;
+        if (oUsuarioEntity == null) {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        } else {
+            oValoracion = oLibroRepository.getValoracion(id);
+            return new ResponseEntity<Double>(oValoracion , HttpStatus.OK);        
+        }
+
+    }
 }
