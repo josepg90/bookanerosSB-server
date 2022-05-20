@@ -35,4 +35,22 @@ public interface LibroRepository extends JpaRepository<LibroEntity, Long> {
     
     @Query(value = "SELECT * FROM libro WHERE id IN (SELECT id_libro FROM favoritos_valoracion WHERE favorito = true AND id_usuario IN (SELECT id FROM usuario WHERE id_usuario = ?))", nativeQuery = true)
     Page<LibroEntity> getFavoritosUsuario(Long id_usuario, Pageable oPageable);
+    
+    @Query(value = "SELECT * FROM `libro` WHERE novedad=true", nativeQuery = true)
+    Page<LibroEntity> getNovedad(Pageable oPageable);
+    
+    @Query(
+            value = "SELECT * FROM libro WHERE novedad=true AND id_tipolibro = ?1",
+            nativeQuery = true)
+    Page<LibroEntity> findNovedadByTipolibroId(long IdTipolibro, Pageable oPageable);
+    
+    @Query(
+            value = "SELECT * FROM libro WHERE novedad=true AND id_tipolibro = ?1 AND (titulo LIKE  %?2% OR autor LIKE %?3%)",
+            nativeQuery = true)
+    Page<LibroEntity> findNovedadByTipolibroIdAndTituloOrAutor(long IdTipolibro, String titulo, String autor, Pageable oPageable);
+    
+    @Query(
+            value = "SELECT * FROM libro WHERE novedad=true AND (titulo LIKE  %?1% OR autor LIKE %?2%)",
+            nativeQuery = true)
+    Page<LibroEntity> findNovedadByTituloOrAutor(String titulo, String codigo, Pageable oPageable);
 }

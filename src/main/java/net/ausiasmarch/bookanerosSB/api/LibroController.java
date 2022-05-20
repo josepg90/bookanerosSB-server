@@ -191,4 +191,52 @@ public class LibroController {
 
         }
     }
+    
+    @GetMapping("/novedadNoFiltro")
+    public ResponseEntity<Page<LibroEntity>> getNovedad(@PageableDefault(page = 0, size = 10, direction = Sort.Direction.DESC) Pageable oPageable) {
+        Page<LibroEntity> oNovedad = null;
+        UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
+
+        if (oUsuarioEntity == null) {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        } else {
+            oNovedad = oLibroRepository.getNovedad( oPageable);                   
+                
+            return new ResponseEntity<Page<LibroEntity>>(oNovedad, HttpStatus.OK);
+            //return new ResponseEntity<Page<LibroEntity>>((Page<LibroEntity>) oLibroRepository.getFavoritosUsuario(oUsuarioEntity.getId()), HttpStatus.OK);
+
+        }
+    }
+    @GetMapping("/novedad")
+    public ResponseEntity<Page<LibroEntity>> getNovedadFiltro(@PageableDefault(page = 0, size = 10, direction = Sort.Direction.DESC) Pageable oPageable,
+            @RequestParam(name = "filter", required = false) String filter, @RequestParam(name = "filtertype", required = false) Long filtertype/**/) {
+        Page<LibroEntity> oPage = null;
+
+        /**/if (filtertype != null && filter != null) {
+            oPage = oLibroRepository.findNovedadByTipolibroIdAndTituloOrAutor(filtertype, filter, filter, oPageable);
+        } else {
+            if (filter != null && filtertype == null) {
+                oPage = oLibroRepository.findNovedadByTituloOrAutor(filter == null ? "" : filter, filter == null ? "" : filter, oPageable);
+
+            } else {
+                if (filtertype != null && filter == null) {
+                    oPage = oLibroRepository.findNovedadByTipolibroId(filtertype, oPageable);
+                } else {
+                    oPage = oLibroRepository.getNovedad(oPageable);
+                }
+            }
+        /*    if (filtertype != null) {
+            oPage = oLibroRepository.findByTipolibroId(filtertype, oPageable);
+        } else {
+            if (filter != null) {
+                oPage = oLibroRepository.findByTituloIgnoreCaseContainingOrAutorIgnoreCaseContaining(filter == null ? "" : filter, filter == null ? "" : filter, oPageable);
+
+            } else {
+                oPage = oLibroRepository.findAll(oPageable);
+            }
+        }*/
+        }
+        //oPage = oLibroRepository.findAll(oPageable);
+        return new ResponseEntity<Page<LibroEntity>>(oPage, HttpStatus.OK);
+    }
 }
