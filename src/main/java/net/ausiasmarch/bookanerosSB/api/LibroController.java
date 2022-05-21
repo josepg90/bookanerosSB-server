@@ -112,18 +112,18 @@ public class LibroController {
     //UPDATE
     //libro/
     //EL PATHVARIABLE ES PARA COMPROBAR EN EL POSTMAN,PARA EL CLIENTE SOBRA, Y /{id} DEL PutMapping!!
-    @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable(value = "id") Long id, @RequestBody LibroEntity oLibroEntity) {
+    @PutMapping("/")
+    public ResponseEntity<?> update(@RequestBody LibroEntity oLibroEntity) {
         UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
         if (oUsuarioEntity.getId() == 1) {
             if (oUsuarioEntity == null) {
                 return new ResponseEntity<Long>(0L, HttpStatus.UNAUTHORIZED);
             } else {
                 //ESTO ES PA CLIENTE, LAS 3 SIGUIENTES LINEAS SIN COMENTAR ES PARA COMPROBAR EN POSTMAN (MIRAR WILDCART SI NO FUNCIONA)
-                //if (oLibroRepository.existsById(oLibroEntity.getId())) {
-                if (oLibroRepository.existsById(id)) {
-                    LibroEntity oLibroEntity3 = oLibroRepository.findById(id).get();
-                    oLibroEntity.setId(id);
+                if (oLibroRepository.existsById(oLibroEntity.getId())) {
+                //if (oLibroRepository.existsById(id)) {
+                    //LibroEntity oLibroEntity3 = oLibroRepository.findById(id).get();
+                    //oLibroEntity.setId(id);
                     //HASTA AQUÍ COMPROBACIÓN EN POSTMAN
                     return new ResponseEntity<LibroEntity>(oLibroRepository.save(oLibroEntity), HttpStatus.OK);
                 } else {
