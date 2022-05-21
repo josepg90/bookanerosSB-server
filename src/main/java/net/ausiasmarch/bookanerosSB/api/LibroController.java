@@ -93,15 +93,15 @@ public class LibroController {
     //CREAR
     // producto/
     @PostMapping("")
-    public ResponseEntity<?> create(@RequestBody LibroEntity oProductoEntity) {
+    public ResponseEntity<?> create(@RequestBody LibroEntity oLibroEntity) {
         UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
         if (oUsuarioEntity.getId() == 1) {
             if (oUsuarioEntity == null) {
                 return new ResponseEntity<Long>(0L, HttpStatus.UNAUTHORIZED);
             } else {
-                oProductoEntity.setId(null);
+                oLibroEntity.setId(null);
 
-                return new ResponseEntity<LibroEntity>(oLibroRepository.save(oProductoEntity), HttpStatus.OK);
+                return new ResponseEntity<LibroEntity>(oLibroRepository.save(oLibroEntity), HttpStatus.OK);
             }
         } else {
             return new ResponseEntity<Long>(0L, HttpStatus.UNAUTHORIZED);
