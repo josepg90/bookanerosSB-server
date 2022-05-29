@@ -26,6 +26,11 @@ public interface LibroRepository extends JpaRepository<LibroEntity, Long> {
     Page<LibroEntity> findByTipolibroId(long IdTipolibro, Pageable oPageable);
     
     @Query(
+            value = "SELECT * FROM libro WHERE id_tipolibro IN (?1, ?2)",
+            nativeQuery = true)
+    Page<LibroEntity> findByTiposlibroId(long IdTipolibro1, long IdTipolibro2, Pageable oPageable);
+    
+    @Query(
             value = "SELECT * FROM libro WHERE id_tipolibro = ?1 AND (titulo LIKE  %?2% OR codigo LIKE %?3%)",
             nativeQuery = true)
     Page<LibroEntity> findByTipolibroIdAndTituloOrCodigo(long IdTipolibro, String titulo, String codigo, Pageable oPageable);

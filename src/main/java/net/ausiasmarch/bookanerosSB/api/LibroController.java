@@ -167,12 +167,12 @@ public class LibroController {
         //LibroEntity olibroEntity = oLibroRepository.getById(id);
         UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
         Double oValoracion = null;
-        if (oUsuarioEntity == null) {
+        /*if (oUsuarioEntity == null) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        } else {
+        } else {*/
             oValoracion = oLibroRepository.getValoracion(id);
             return new ResponseEntity<Double>(oValoracion , HttpStatus.OK);        
-        }
+        //}
 
     }
     
@@ -238,5 +238,18 @@ public class LibroController {
         }
         //oPage = oLibroRepository.findAll(oPageable);
         return new ResponseEntity<Page<LibroEntity>>(oPage, HttpStatus.OK);
+    }
+    
+    @GetMapping("/sugerencias")
+    public ResponseEntity<Page<LibroEntity>> getSugerencias(@PageableDefault(page = 0, size = 10, direction = Sort.Direction.DESC) Pageable oPageable,
+            @RequestParam(name = "idTipoLibro1", required = true) Long idTipoLibro1, @RequestParam(name = "idTipoLibro2", required = true) Long idTipoLibro2/**/) {
+        Page<LibroEntity> oSugerencias = null;
+
+        if (idTipoLibro1 != null && idTipoLibro2 != null) {
+            oSugerencias = oLibroRepository.findByTiposlibroId(idTipoLibro1, idTipoLibro2, oPageable);
+        } else {            
+               return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);  
+        }
+        return new ResponseEntity<Page<LibroEntity>>(oSugerencias, HttpStatus.OK);
     }
 }
