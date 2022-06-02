@@ -25,6 +25,7 @@ public interface LibroRepository extends JpaRepository<LibroEntity, Long> {
             nativeQuery = true)
     Page<LibroEntity> findByTipolibroId(long IdTipolibro, Pageable oPageable);
     
+    //Query para sugerencias de libros cogiendo dos tipos de libros que se cogen aleatoriamente de los favoritos de un usuario
     @Query(
             value = "SELECT * FROM libro WHERE id_tipolibro IN (?1, ?2)",
             nativeQuery = true)
@@ -40,6 +41,15 @@ public interface LibroRepository extends JpaRepository<LibroEntity, Long> {
     
     @Query(value = "SELECT * FROM libro WHERE id IN (SELECT id_libro FROM favoritos_valoracion WHERE favorito = true AND id_usuario IN (SELECT id FROM usuario WHERE id_usuario = ?))", nativeQuery = true)
     Page<LibroEntity> getFavoritosUsuario(Long id_usuario, Pageable oPageable);
+    
+     @Query(value = "SELECT * FROM libro WHERE id IN (SELECT id_libro FROM favoritos_valoracion WHERE favorito = true AND id_usuario IN (SELECT id FROM usuario WHERE id_usuario = ?1)) AND id_tipolibro = ?2", nativeQuery = true)
+    Page<LibroEntity> getFavoritosUsuarioAndIdTipolibro(Long id_usuario, long id_tipolibro, Pageable oPageable);
+    
+    @Query(value = "SELECT * FROM libro WHERE id IN (SELECT id_libro FROM favoritos_valoracion WHERE favorito = true AND id_usuario IN (SELECT id FROM usuario WHERE id_usuario = ?1)) AND (titulo LIKE  %?2% OR autor LIKE %?3%)", nativeQuery = true)
+    Page<LibroEntity> getFavoritosUsuarioFiltro(Long id_usuario, String nombre, String autor, Pageable oPageable);
+    
+    @Query(value = "SELECT * FROM libro WHERE id IN (SELECT id_libro FROM favoritos_valoracion WHERE favorito = true AND id_usuario IN (SELECT id FROM usuario WHERE id_usuario = ?1)) AND ((titulo LIKE  %?2% OR autor LIKE %?3%) AND id_tipolibro = ?4)", nativeQuery = true)
+    Page<LibroEntity> getFavoritosUsuarioFiltroAndIdTipoLibro(Long id_usuario, String nombre, String autor, long id_tipolibro, Pageable oPageable);
     
     @Query(value = "SELECT * FROM `libro` WHERE novedad=true", nativeQuery = true)
     Page<LibroEntity> getNovedad(Pageable oPageable);

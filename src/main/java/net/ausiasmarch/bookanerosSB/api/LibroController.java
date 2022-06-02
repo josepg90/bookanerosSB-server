@@ -177,19 +177,34 @@ public class LibroController {
     }
     
     @GetMapping("/favoritos")
-    public ResponseEntity<Page<LibroEntity>> getFavoritos(@PageableDefault(page = 0, size = 10, direction = Sort.Direction.DESC) Pageable oPageable) {
+    public ResponseEntity<Page<LibroEntity>> getFavoritos(@PageableDefault(page = 0, size = 10, direction = Sort.Direction.DESC) Pageable oPageable,
+             @RequestParam(name = "filter", required = false) String filter,@RequestParam(name = "filtertype", required = false) Long filtertype) {
         Page<LibroEntity> oFavoritos = null;
         UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
 
         if (oUsuarioEntity == null) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         } else {
-            oFavoritos = oLibroRepository.getFavoritosUsuario(oUsuarioEntity.getId(), oPageable);                   
-                
-            return new ResponseEntity<Page<LibroEntity>>(oFavoritos, HttpStatus.OK);
+            if (filter==null && filtertype==null) {
+            oFavoritos = oLibroRepository.getFavoritosUsuario(oUsuarioEntity.getId(), oPageable); 
+            } else{
+                if (filter!=null && filtertype==null) {
+            oFavoritos = oLibroRepository.getFavoritosUsuarioFiltro(oUsuarioEntity.getId(), filter, filter, oPageable); 
+            } else {
+                    if (filter!=null && filtertype!=null) {
+            oFavoritos = oLibroRepository.getFavoritosUsuarioFiltroAndIdTipoLibro(oUsuarioEntity.getId(), filter, filter, filtertype, oPageable); 
+            } else {
+                        if(filter==null && filtertype!=null){
+                        oFavoritos = oLibroRepository.getFavoritosUsuarioAndIdTipolibro(oUsuarioEntity.getId(), filtertype, oPageable); 
+                        }
+                    }
+                }
+                 
+           
             //return new ResponseEntity<Page<LibroEntity>>((Page<LibroEntity>) oLibroRepository.getFavoritosUsuario(oUsuarioEntity.getId()), HttpStatus.OK);
-
+            }
         }
+         return new ResponseEntity<Page<LibroEntity>>(oFavoritos, HttpStatus.OK);
     }
     
     @GetMapping("/novedadNoFiltro")
@@ -244,12 +259,18 @@ public class LibroController {
     public ResponseEntity<Page<LibroEntity>> getSugerencias(@PageableDefault(page = 0, size = 10, direction = Sort.Direction.DESC) Pageable oPageable,
             @RequestParam(name = "idTipoLibro1", required = true) Long idTipoLibro1, @RequestParam(name = "idTipoLibro2", required = true) Long idTipoLibro2/**/) {
         Page<LibroEntity> oSugerencias = null;
+        UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
 
+        if (oUsuarioEntity == null) {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        } else {
+        
         if (idTipoLibro1 != null && idTipoLibro2 != null) {
             oSugerencias = oLibroRepository.findByTiposlibroId(idTipoLibro1, idTipoLibro2, oPageable);
         } else {            
                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);  
         }
         return new ResponseEntity<Page<LibroEntity>>(oSugerencias, HttpStatus.OK);
+        }
     }
 }
